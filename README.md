@@ -18,7 +18,7 @@ Bundle 'https://github.com/gorodinskiy/coloresque.git'
 
 ###Features
 
-You can steal use hsl(a)
+You can still use hsl(a)
 
 ![Picture](https://coderwall-assets-0.s3.amazonaws.com/uploads/picture/file/1965/hsla.png)
 
