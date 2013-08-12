@@ -1,6 +1,8 @@
 Coloresque
 ==========
 
+![pic](https://raw.github.com/gorodinskiy/vim-coloresque/master/screen.png)
+
 color preview for vim.
 
 ###Overview
