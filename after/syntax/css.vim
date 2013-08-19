@@ -34,10 +34,10 @@ let s:fg_color_calc = 'let color = "#" . toupper(a:color)'
 
 function! s:RestoreColors()
     for part in keys(b:color_pattern)
-      let group = 'cssColor' . tolower(strpart(b:color_pattern[part], 1))
+      let group = 'cssColor' . tolower(strpart(b:color_pattern[part]["color"], 1))
       "exe 'syn match' group '/'.escape(pattern, '/').'/ contained'
       exe 'syn cluster cssColors add='.group
-      exe 'hi' group s:color_prefix.'bg='.b:color_pattern[part] s:color_prefix.'fg='.s:FGForBG(strpart(b:color_pattern[part], 1))
+      exe 'hi' group s:color_prefix.'bg='.b:color_pattern[part]["bg"] s:color_prefix.'fg='.b:color_pattern[part]["fg"]
       
       if !exists('b:matchescache')
         let b:matchescache={}
@@ -55,11 +55,11 @@ function! s:MatchColorValue(color, pattern, part)
   if pattern =~ '\>$' | let pattern .= '\>' | endif
 
   let group = 'cssColor' . tolower(a:color)
+  exe s:fg_color_calc
   if !exists('b:color_pattern[a:part]')
-      let b:color_pattern[a:part]='#'.toupper(a:color)
+      let b:color_pattern[a:part]={"color": a:color, "bg": color, "fg": s:FGForBG(a:color)}
       "exe 'syn match' group '/'.escape(pattern, '/').'/ contained'
       exe 'syn cluster cssColors add='.group
-      exe s:fg_color_calc
       exe 'hi' group s:color_prefix.'bg='.color s:color_prefix.'fg='.s:FGForBG(a:color)
   endif
 
