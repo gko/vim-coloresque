@@ -43,7 +43,7 @@ function! s:RestoreColors()
         let b:matchescache={}
       endif
 
-      let b:matchescache[part] = matchadd(group, part)
+      let b:matchescache[part] = matchadd(group, part, -1)
     endfor
 endfunction
 
@@ -66,7 +66,7 @@ function! s:MatchColorValue(color, pattern, part)
   if !exists('b:matchescache')
     let b:matchescache = {}
   elseif !exists('b:matchescache[a:part]')
-    let b:matchescache[a:part] = matchadd(group, a:part)
+    let b:matchescache[a:part] = matchadd(group, a:part, -1)
   endif
 
   return ''
