@@ -2,7 +2,7 @@
 " Language:     color preview in vim
 " Author:       Gorodinskii Konstantin <gor.konstantin@gmail.com>
 " Licence:      Vim license
-" Version:      0.8b
+" Version:      0.9.1
 " based on
 " https://github.com/ap/vim-css-color
 " https://github.com/lilydjwg/colorizer
@@ -113,6 +113,9 @@ function! s:VimCssInit(update)
     if a:update==1
         call s:ClearMatches()
     endif
+    :set isk+=-
+    :set isk+=#
+    :set isk+=.
     
     if exists('b:color_pattern')&&len(keys(b:color_pattern))>0
         call s:RestoreColors()
@@ -304,20 +307,28 @@ function! s:PreviewCSSColor(str)
 
   let line=a:str "getline(a:w)
   let colorexps = {
-    \ 'hex3' : '#\(\x\)\(\x\)\(\x\)\>', 
-    \ 'hex'  : '#\(\x\{6}\)\>',
+    \ 'hex'  : '#[0-9A-Fa-f]\{3\}\>\|#[0-9A-Fa-f]\{6\}\>',
     \ 'rgba' : 'rgba\?(\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*\%(,[^)]*\)\?)',
     \ 'hsla' : 'hsla\?(\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*\%(,[^)]*\)\?)',
     \ 'color': w:colorDictRegExp
     \ }
 
-  let foundcolor=''
+  "let foundcolor=''
 
   for exp in keys(colorexps)
       let place=0
 
+      if exists("foundcolor")
+          unlet foundcolor
+      endif
+
       while 1
-          let foundcolor = matchstr(a:str, colorexps[exp], place)
+          if exp=='rgba'||exp=='hsla'
+              let foundcolor = matchlist(a:str, colorexps[exp], place)
+          else
+              let foundcolor = matchstr(a:str, colorexps[exp], place)
+          endif
+
           let place = matchend(a:str, colorexps[exp], place)
 
           if empty(foundcolor)
@@ -325,22 +336,23 @@ function! s:PreviewCSSColor(str)
           endif
            
           if exp=='color'
-              let part = '\<'.foundcolor . '\>'
-          elseif exp=='hex3'||exp=='hex'
+              let part = '\<'.foundcolor.'\>'
+          elseif exp=='hex'
               let part = foundcolor.'\>'
           else
-              let part = foundcolor
+              let part = foundcolor[0]
           endif
 
-          if exp=='hex3'
-              let l:tmp=strpart(foundcolor, 1)
-              call s:MatchColorValue(tmp[0].tmp[0].tmp[1].tmp[1].tmp[2].tmp[2], foundcolor, part)
-          elseif exp=='hex'
+          if exp=='hex'
+              if len(foundcolor) == 4
+                  let foundcolor = substitute(foundcolor, '[[:xdigit:]]', '&&', 'g')
+              endif
               call s:MatchColorValue(strpart(foundcolor, 1), foundcolor, part)
           elseif exp=='rgba'
-              call substitute(foundcolor, 'rgba\?(\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*\%(,[^)]*\)\?)', '\=s:MatchColorValue(s:HexForRGBValue(submatch(1),submatch(2),submatch(3)),submatch(0), "'.part.'")', 'g')
+              "TODO get rid of duplicated variables
+              call s:MatchColorValue(s:HexForRGBValue(foundcolor[1], foundcolor[2], foundcolor[3]), foundcolor[0], part)
           elseif exp=='hsla'
-              call substitute(foundcolor, 'hsla\?(\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*\%(,[^)]*\)\?)', '\=s:MatchColorValue(s:HexForHSLValue(submatch(1),submatch(2),submatch(3)),submatch(0), "'.part.'")', 'g')
+              call s:MatchColorValue(s:HexForHSLValue(foundcolor[1], foundcolor[2], foundcolor[3]), foundcolor[0], part)
           elseif exp=='color'
               if has_key(w:colorDict, tolower(foundcolor))
                   call s:MatchColorValue(strpart(w:colorDict[tolower(foundcolor)], 1), w:colorDict[tolower(foundcolor)], part)
