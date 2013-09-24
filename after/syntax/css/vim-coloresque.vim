@@ -56,12 +56,12 @@ function! s:MatchColorValue(color, pattern, part)
 
   let group = 'cssColor' . tolower(a:color)
   exe s:fg_color_calc
-  if !exists('b:color_pattern[a:part]')
-      let b:color_pattern[a:part]={"color": a:color, "bg": color, "fg": s:FGForBG(a:color)}
+  "if !exists('b:color_pattern[a:part]')
+      "let b:color_pattern[a:part]={"color": a:color, "bg": color, "fg": s:FGForBG(a:color)}
       "exe 'syn match' group '/'.escape(pattern, '/').'/ contained'
       exe 'syn cluster cssColors add='.group
       exe 'hi' group s:color_prefix.'bg='.color s:color_prefix.'fg='.s:FGForBG(a:color)
-  endif
+  "endif
 
   if !exists('b:matchescache')
     let b:matchescache = {}
@@ -117,12 +117,10 @@ function! s:VimCssInit(update)
     :set isk+=#
     :set isk+=.
     
-    if exists('b:color_pattern')&&len(keys(b:color_pattern))>0
-        call s:RestoreColors()
-        return
-    endif
-
-    call s:AdditionalColors()
+    "if exists('b:color_pattern')&&len(keys(b:color_pattern))>0
+        "call s:RestoreColors()
+        "return
+    "endif
 
     "let b:matchescache = {}
 
@@ -294,7 +292,7 @@ function! s:AdditionalColors()
   "let w:colorDictRegExp = '\(' 
   for _color in keys(w:colorDict)
     "let w:colorDictRegExp.='\<'._color.'\>\|' 
-    call s:MatchColorValue(strpart(w:colorDict[tolower(_color)], 1), w:colorDict[tolower(_color)], '\<'._color.'\>')
+    call s:MatchColorValue(strpart(w:colorDict[tolower(_color)], 1), w:colorDict[tolower(_color)], '\<\c'._color.'\>')
   endfor
   "let w:colorDictRegExp=strpart(w:colorDictRegExp, 0, len(w:colorDictRegExp)-2).'\)\c'
 endfunction
