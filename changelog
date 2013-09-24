@@ -1,5 +1,0 @@
-2013-09-20  Gorodinskii Konstantin  <gor.konstantin@gmail.com>
-	- 0.9.1
-	- fixed bug #7 "Do not trigger on CSS property names"
-	- fixed bug #11 "hlsearch colors hidden by coloresque colors"
-	- merged hex and hex3 handlers

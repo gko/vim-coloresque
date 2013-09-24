@@ -2,7 +2,7 @@
 " Language:     color preview in vim
 " Author:       Gorodinskii Konstantin <gor.konstantin@gmail.com>
 " Licence:      Vim license
-" Version:      0.9.1
+" Version:      0.9.3
 " based on
 " https://github.com/ap/vim-css-color
 " https://github.com/lilydjwg/colorizer
@@ -121,6 +121,8 @@ function! s:VimCssInit(update)
         call s:RestoreColors()
         return
     endif
+
+    call s:AdditionalColors()
 
     "let b:matchescache = {}
 
@@ -286,14 +288,15 @@ function! s:AdditionalColors()
       \'violet': '#ee82ee',
       \'wheat': '#f5deb3',
       \'whitesmoke': '#f5f5f5',
-      \'yellowgreen': '#9acd32',
+      \'yellowgreen': '#9acd32'
     \}
 
-  let w:colorDictRegExp = '\(' 
+  "let w:colorDictRegExp = '\(' 
   for _color in keys(w:colorDict)
-    let w:colorDictRegExp.='\<'._color.'\>\|' 
+    "let w:colorDictRegExp.='\<'._color.'\>\|' 
+    call s:MatchColorValue(strpart(w:colorDict[tolower(_color)], 1), w:colorDict[tolower(_color)], '\<'._color.'\>')
   endfor
-  let w:colorDictRegExp=strpart(w:colorDictRegExp, 0, len(w:colorDictRegExp)-2).'\)\c'
+  "let w:colorDictRegExp=strpart(w:colorDictRegExp, 0, len(w:colorDictRegExp)-2).'\)\c'
 endfunction
 
 function! s:ProcessByLine(w)
@@ -301,17 +304,16 @@ function! s:ProcessByLine(w)
 endfunction
 
 function! s:PreviewCSSColor(str)
-  if !exists('&w:colorDictRegExp')
-    call s:AdditionalColors()
-  endif
+  "if !exists('&w:colorDictRegExp')
+  "endif
 
   let line=a:str "getline(a:w)
   let colorexps = {
     \ 'hex'  : '#[0-9A-Fa-f]\{3\}\>\|#[0-9A-Fa-f]\{6\}\>',
     \ 'rgba' : 'rgba\?(\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*\%(,[^)]*\)\?)',
-    \ 'hsla' : 'hsla\?(\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*\%(,[^)]*\)\?)',
-    \ 'color': w:colorDictRegExp
+    \ 'hsla' : 'hsla\?(\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*\%(,[^)]*\)\?)'
     \ }
+    "\ 'color': w:colorDictRegExp
 
   "let foundcolor=''
 
@@ -334,10 +336,8 @@ function! s:PreviewCSSColor(str)
           if empty(foundcolor)
               break 
           endif
-           
-          if exp=='color'
-              let part = '\<'.foundcolor.'\>'
-          elseif exp=='hex'
+
+          if exp=='hex'
               let part = foundcolor.'\>'
           else
               let part = foundcolor[0]
@@ -353,10 +353,6 @@ function! s:PreviewCSSColor(str)
               call s:MatchColorValue(s:HexForRGBValue(foundcolor[1], foundcolor[2], foundcolor[3]), foundcolor[0], part)
           elseif exp=='hsla'
               call s:MatchColorValue(s:HexForHSLValue(foundcolor[1], foundcolor[2], foundcolor[3]), foundcolor[0], part)
-          elseif exp=='color'
-              if has_key(w:colorDict, tolower(foundcolor))
-                  call s:MatchColorValue(strpart(w:colorDict[tolower(foundcolor)], 1), w:colorDict[tolower(foundcolor)], part)
-              endif
           endif
       endwhile
   endfor
