@@ -100,6 +100,8 @@ function! s:HexForHSLValue(h,s,l)
 endfunction
 
 function! s:ClearMatches()
+  call clearmatches()
+  
   if !exists('b:matchescache')
     return
   endif
