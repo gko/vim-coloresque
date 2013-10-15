@@ -1,6 +1,10 @@
 Coloresque
 ==========
 
+```
+Important! If you experience lags in css/html/less/sass files please update to latest version of plugin. The issue #13
+```
+
 ![pic](https://raw.github.com/gorodinskiy/vim-coloresque/master/screen.png)
 
 color preview for vim.
