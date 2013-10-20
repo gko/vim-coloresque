@@ -1,4 +1,4 @@
-" Name:         Coloresque
+",a Name:         Coloresque
 " Language:     color preview in vim
 " Author:       Gorodinskii Konstantin <gor.konstantin@gmail.com>
 " Licence:      Vim license
