@@ -1,4 +1,4 @@
-",a Name:         Coloresque
+" Name:         Coloresque
 " Language:     color preview in vim
 " Author:       Gorodinskii Konstantin <gor.konstantin@gmail.com>
 " Licence:      Vim license
@@ -56,12 +56,12 @@ function! s:MatchColorValue(color, pattern, part)
 
   let group = 'cssColor' . tolower(a:color)
   exe s:fg_color_calc
-  "if !exists('b:color_pattern[a:part]')
-      "let b:color_pattern[a:part]={"color": a:color, "bg": color, "fg": s:FGForBG(a:color)}
+  if !exists('b:color_pattern[a:part]')
+      let b:color_pattern[a:part]= a:color
       "exe 'syn match' group '/'.escape(pattern, '/').'/ contained'
       exe 'syn cluster cssColors add='.group
       exe 'hi' group s:color_prefix.'bg='.color s:color_prefix.'fg='.s:FGForBG(a:color)
-  "endif
+  endif
 
   if !exists('b:matchescache')
     let b:matchescache = {}
