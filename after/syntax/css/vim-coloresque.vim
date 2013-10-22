@@ -2,7 +2,7 @@
 " Language:     color preview in vim
 " Author:       Gorodinskii Konstantin <gor.konstantin@gmail.com>
 " Licence:      Vim license
-" Version:      0.9.3
+" Version:      0.9.5
 " based on
 " https://github.com/ap/vim-css-color
 " https://github.com/lilydjwg/colorizer
@@ -618,8 +618,6 @@ if has("gui_running") || &t_Co==256
   hi cssColorffffe0 guibg=#FFFFE0 guifg=#000000 ctermbg=255 ctermfg=16  | syn cluster cssColors add=cssColorffffe0
   hi cssColorfffff0 guibg=#FFFFF0 guifg=#000000 ctermbg=15  ctermfg=16  | syn cluster cssColors add=cssColorfffff0
   hi cssColorffffff guibg=#FFFFFF guifg=#000000 ctermbg=231 ctermfg=16  | syn cluster cssColors add=cssColorffffff
-
- " sdfad
 
   "call s:VimCssInit(1)
 
