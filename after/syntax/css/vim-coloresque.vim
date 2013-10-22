@@ -34,33 +34,37 @@ let s:fg_color_calc = 'let color = "#" . toupper(a:color)'
 
 function! s:RestoreColors()
     for part in keys(b:color_pattern)
-      let group = 'cssColor' . tolower(strpart(b:color_pattern[part]["color"], 1))
-      "exe 'syn match' group '/'.escape(pattern, '/').'/ contained'
-      exe 'syn cluster cssColors add='.group
-      exe 'hi' group s:color_prefix.'bg='.b:color_pattern[part]["bg"] s:color_prefix.'fg='.b:color_pattern[part]["fg"]
-      
-      if !exists('b:matchescache')
-        let b:matchescache={}
-      endif
 
-      let b:matchescache[part] = matchadd(group, part, -1)
+      "if b:color_pattern[part]=="ffffff"
+        "echoe part
+      "endif
+      
+      call s:MatchColorValue(b:color_pattern[part], part)
+      "echoe color
+      "echoe b:color_pattern[color]
+      "let group = 'cssColor' . tolower(strpart(b:color_pattern[part]["color"], 1))
+      ""exe 'syn match' group '/'.escape(pattern, '/').'/ contained'
+      "exe 'syn cluster cssColors add='.group
+      "exe 'hi' group s:color_prefix.'bg='.b:color_pattern[part]["bg"] s:color_prefix.'fg='.b:color_pattern[part]["fg"]
+      
+      "if !exists('b:matchescache')
+        "let b:matchescache={}
+      "endif
+
+      "let b:matchescache[part] = matchadd(group, part, -1)
     endfor
 endfunction
 
-function! s:MatchColorValue(color, pattern, part)
+function! s:MatchColorValue(color, part)
   if ! len(a:color) | return | endif
 
-  let pattern = a:pattern
-  " if pattern ends on word character, require word break to match
-  if pattern =~ '\>$' | let pattern .= '\>' | endif
+    let group = 'cssColor' . tolower(a:color)
 
-  let group = 'cssColor' . tolower(a:color)
-  exe s:fg_color_calc
   if !exists('b:color_pattern[a:part]')
-      let b:color_pattern[a:part]= a:color
-      "exe 'syn match' group '/'.escape(pattern, '/').'/ contained'
-      exe 'syn cluster cssColors add='.group
-      exe 'hi' group s:color_prefix.'bg='.color s:color_prefix.'fg='.s:FGForBG(a:color)
+    exe s:fg_color_calc
+    exe 'syn cluster cssColors add='.group
+    exe 'hi' group s:color_prefix.'bg='.color s:color_prefix.'fg='.s:FGForBG(a:color)
+    let b:color_pattern[a:part] = a:color
   endif
 
   if !exists('b:matchescache')
@@ -68,6 +72,8 @@ function! s:MatchColorValue(color, pattern, part)
   elseif !exists('b:matchescache[a:part]')
     let b:matchescache[a:part] = matchadd(group, a:part, -1)
   endif
+
+  "call add(w:matchescache, matchadd(group, a:part, -1))
 
   return ''
 endfunction
@@ -112,17 +118,18 @@ function! s:ClearMatches()
 endfunction
 
 function! s:VimCssInit(update)
+
     if a:update==1
         call s:ClearMatches()
     endif
     :set isk+=-
     :set isk+=#
     :set isk+=.
-    
-    "if exists('b:color_pattern')&&len(keys(b:color_pattern))>0
-        "call s:RestoreColors()
-        "return
-    "endif
+
+    if len(keys(b:color_pattern))>0
+        call s:RestoreColors()
+        return
+    endif
 
     "let b:matchescache = {}
 
@@ -135,9 +142,9 @@ function! s:VimCssInit(update)
 endfunction
 
 function! s:AdditionalColors()
-    if exists('&w:colorDictRegExp')&&w:colorDictRegExp!=''
-        return
-    endif
+    "if exists('&b:colorDictRegExp')&&b:colorDictRegExp!=''
+        "return
+    "endif
 
   " w3c Colors
   " plus extra colors
@@ -294,7 +301,7 @@ function! s:AdditionalColors()
   "let w:colorDictRegExp = '\(' 
   for _color in keys(w:colorDict)
     "let w:colorDictRegExp.='\<'._color.'\>\|' 
-    call s:MatchColorValue(strpart(w:colorDict[tolower(_color)], 1), w:colorDict[tolower(_color)], '\<\c'._color.'\>')
+    call s:MatchColorValue(strpart(w:colorDict[tolower(_color)], 1), '\<\c'._color.'\>')
   endfor
   "let w:colorDictRegExp=strpart(w:colorDictRegExp, 0, len(w:colorDictRegExp)-2).'\)\c'
 endfunction
@@ -334,7 +341,7 @@ function! s:PreviewCSSColor(str)
           let place = matchend(a:str, colorexps[exp], place)
 
           if empty(foundcolor)
-              break 
+              break
           endif
 
           if exp=='hex'
@@ -347,12 +354,12 @@ function! s:PreviewCSSColor(str)
               if len(foundcolor) == 4
                   let foundcolor = substitute(foundcolor, '[[:xdigit:]]', '&&', 'g')
               endif
-              call s:MatchColorValue(strpart(foundcolor, 1), foundcolor, part)
+              call s:MatchColorValue(strpart(foundcolor, 1), part)
           elseif exp=='rgba'
               "TODO get rid of duplicated variables
-              call s:MatchColorValue(s:HexForRGBValue(foundcolor[1], foundcolor[2], foundcolor[3]), foundcolor[0], part)
+              call s:MatchColorValue(s:HexForRGBValue(foundcolor[1], foundcolor[2], foundcolor[3]), part)
           elseif exp=='hsla'
-              call s:MatchColorValue(s:HexForHSLValue(foundcolor[1], foundcolor[2], foundcolor[3]), foundcolor[0], part)
+              call s:MatchColorValue(s:HexForHSLValue(foundcolor[1], foundcolor[2], foundcolor[3]), part)
           endif
       endwhile
   endfor
@@ -612,10 +619,16 @@ if has("gui_running") || &t_Co==256
   hi cssColorfffff0 guibg=#FFFFF0 guifg=#000000 ctermbg=15  ctermfg=16  | syn cluster cssColors add=cssColorfffff0
   hi cssColorffffff guibg=#FFFFFF guifg=#000000 ctermbg=231 ctermfg=16  | syn cluster cssColors add=cssColorffffff
 
-  call s:VimCssInit(1)
+ " sdfad
 
-  autocmd CursorMoved  <buffer> silent call s:ProcessByLine('.')
-  autocmd CursorMovedI <buffer> silent call s:ProcessByLine('.')
-  autocmd ColorScheme <buffer> silent call s:VimCssInit(1) 
-  autocmd BufEnter <buffer> silent call s:VimCssInit(1) 
+  "call s:VimCssInit(1)
+
+  ":augroup css
+    "au!
+    autocmd CursorMovedI <buffer> silent call s:ProcessByLine('.')
+    autocmd ColorScheme <buffer> silent call s:VimCssInit(1)
+    autocmd BufEnter <buffer> silent call s:VimCssInit(1)
+  ":augroup END
+
+  "autocmd CursorMoved  <buffer> silent call s:ProcessByLine('.')
 endif
