@@ -124,7 +124,10 @@ function! s:VimCssInit(update)
     endif
     :set isk+=-
     :set isk+=#
-    :set isk+=.
+
+    if 'python' != &filetype
+      :set isk+=.
+    endif
 
     if len(keys(b:color_pattern))>0
         call s:RestoreColors()
