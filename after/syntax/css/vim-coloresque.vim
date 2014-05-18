@@ -122,10 +122,9 @@ function! s:VimCssInit(update)
     if a:update==1
         call s:ClearMatches()
     endif
-    :set isk+=-
-    :set isk+=#
-
-    if 'python' != &filetype
+    if 'css' == &filetype
+      :set isk+=-
+      :set isk+=#
       :set isk+=.
     endif
 
