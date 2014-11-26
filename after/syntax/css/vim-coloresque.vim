@@ -12,6 +12,12 @@ let s:hex={}
 let b:matchescache = {}
 let b:color_pattern = {}
 
+" set buffer iskeyword
+let b:keywords = exists('g:coloresque_keywords') ? g:coloresque_keywords : []
+for keyword in b:keywords
+    exe printf('set iskeyword+=%s', keyword)
+endfor
+
 let w:colorDictRegExp=''
 for i in range(0, 255)
   let s:hex[ printf( '%02x', i ) ] = i
@@ -122,9 +128,6 @@ function! s:VimCssInit(update)
     if a:update==1
         call s:ClearMatches()
     endif
-    :set isk+=-
-    :set isk+=#
-    :set isk+=.
 
     if len(keys(b:color_pattern))>0
         call s:RestoreColors()
