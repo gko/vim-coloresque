@@ -38,7 +38,7 @@ function! s:RestoreColors()
       "if b:color_pattern[part]=="ffffff"
         "echoe part
       "endif
-      
+
       call s:MatchColorValue(b:color_pattern[part], part)
       "echoe color
       "echoe b:color_pattern[color]
@@ -46,7 +46,7 @@ function! s:RestoreColors()
       ""exe 'syn match' group '/'.escape(pattern, '/').'/ contained'
       "exe 'syn cluster cssColors add='.group
       "exe 'hi' group s:color_prefix.'bg='.b:color_pattern[part]["bg"] s:color_prefix.'fg='.b:color_pattern[part]["fg"]
-      
+
       "if !exists('b:matchescache')
         "let b:matchescache={}
       "endif
@@ -107,7 +107,7 @@ endfunction
 
 function! s:ClearMatches()
   call clearmatches()
-  
+
   if !exists('b:matchescache')
     return
   endif
@@ -122,9 +122,9 @@ function! s:VimCssInit(update)
     if a:update==1
         call s:ClearMatches()
     endif
-    :set isk+=-
-    :set isk+=#
-    :set isk+=.
+    :setlocal iskeyword+=-
+    :setlocal iskeyword+=#
+    :setlocal iskeyword+=.
 
     if len(keys(b:color_pattern))>0
         call s:RestoreColors()
@@ -298,9 +298,9 @@ function! s:AdditionalColors()
       \'yellowgreen': '#9acd32'
     \}
 
-  "let w:colorDictRegExp = '\(' 
+  "let w:colorDictRegExp = '\('
   for _color in keys(w:colorDict)
-    "let w:colorDictRegExp.='\<'._color.'\>\|' 
+    "let w:colorDictRegExp.='\<'._color.'\>\|'
     call s:MatchColorValue(strpart(w:colorDict[tolower(_color)], 1), '\<\c'._color.'\>')
   endfor
   "let w:colorDictRegExp=strpart(w:colorDictRegExp, 0, len(w:colorDictRegExp)-2).'\)\c'
