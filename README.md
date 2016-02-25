@@ -1,6 +1,7 @@
 Coloresque
 ==========
 
+add R support
 ***
 
 **Important!** If you experience any lags in css/html/less/sass files please update to latest version(0.9.5) of plugin.
