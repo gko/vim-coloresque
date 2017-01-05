@@ -119,6 +119,10 @@ endfunction
 
 function! s:VimCssInit(update)
 
+    if !exists("b:color_pattern")
+        let b:color_pattern = {}
+    endif
+
     if a:update==1
         call s:ClearMatches()
     endif
