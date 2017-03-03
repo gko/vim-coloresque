@@ -122,9 +122,6 @@ function! s:VimCssInit(update)
     if a:update==1
         call s:ClearMatches()
     endif
-    :setlocal iskeyword+=-
-    :setlocal iskeyword+=#
-    :setlocal iskeyword+=.
 
     if len(keys(b:color_pattern))>0
         call s:RestoreColors()
