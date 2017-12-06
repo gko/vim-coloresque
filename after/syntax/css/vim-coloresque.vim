@@ -105,23 +105,24 @@ function! s:HexForHSLValue(h,s,l)
   return printf( '%02x%02x%02x', rgb[0], rgb[1], rgb[2] )
 endfunction
 
-function! s:ClearMatches()
-  call clearmatches()
-
-  if !exists('b:matchescache')
-    return
-  endif
-  "for i in values(b:matchescache)
-    "call matchdelete(i)
-  "endfor
-  unlet b:matchescache
-endfunction
+" dislabed for conflict with indentLine plugin
+" function! s:ClearMatches()
+"   call clearmatches()
+"
+"   if !exists('b:matchescache')
+"     return
+"   endif
+"   "for i in values(b:matchescache)
+"     "call matchdelete(i)
+"   "endfor
+"   unlet b:matchescache
+" endfunction
 
 function! s:VimCssInit(update)
 
-    if a:update==1
-        call s:ClearMatches()
-    endif
+"    if a:update==1
+"        call s:ClearMatches()
+"    endif
     if 'css' == &filetype
       :set isk+=-
       :set isk+=#
