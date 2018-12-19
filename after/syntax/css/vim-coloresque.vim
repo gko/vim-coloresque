@@ -34,24 +34,7 @@ let s:fg_color_calc = 'let color = "#" . toupper(a:color)'
 
 function! s:RestoreColors()
   for part in keys(b:color_pattern)
-
-    "if b:color_pattern[part]=="ffffff"
-    "echoe part
-    "endif
-
     call s:MatchColorValue(b:color_pattern[part], part)
-    "echoe color
-    "echoe b:color_pattern[color]
-    "let group = 'cssColor' . tolower(strpart(b:color_pattern[part]["color"], 1))
-    ""exe 'syn match' group '/'.escape(pattern, '/').'/ contained'
-    "exe 'syn cluster cssColors add='.group
-    "exe 'hi' group s:color_prefix.'bg='.b:color_pattern[part]["bg"] s:color_prefix.'fg='.b:color_pattern[part]["fg"]
-
-    "if !exists('b:matchescache')
-    "let b:matchescache={}
-    "endif
-
-    "let b:matchescache[part] = matchadd(group, part, -1)
   endfor
 endfunction
 
@@ -73,9 +56,8 @@ function! s:MatchColorValue(color, part)
     let b:matchescache[a:part] = matchadd(group, a:part, -1)
   endif
 
-  "call add(w:matchescache, matchadd(group, a:part, -1))
-
   return ''
+
 endfunction
 
 function! s:HexForRGBValue(r,g,b)
@@ -111,9 +93,7 @@ function! s:ClearMatches()
   if !exists('b:matchescache')
     return
   endif
-  "for i in values(b:matchescache)
-  "call matchdelete(i)
-  "endfor
+
   unlet b:matchescache
 endfunction
 
@@ -135,21 +115,12 @@ function! s:VimCssInit(update)
     return
   endif
 
-  "let b:matchescache = {}
-
   call s:AdditionalColors()
-
-  "for i in range(1, line("$"))
   call s:PreviewCSSColor(join(getline(1,'$'), "\n"))
-  "endfor
 
 endfunction
 
 function! s:AdditionalColors()
-  "if exists('&b:colorDictRegExp')&&b:colorDictRegExp!=''
-  "return
-  "endif
-
   " w3c Colors
   " plus extra colors
   let w:colorDict = {
@@ -302,12 +273,9 @@ function! s:AdditionalColors()
         \'yellowgreen': '#9acd32'
         \}
 
-  "let w:colorDictRegExp = '\('
   for _color in keys(w:colorDict)
-    "let w:colorDictRegExp.='\<'._color.'\>\|'
     call s:MatchColorValue(strpart(w:colorDict[tolower(_color)], 1), '\<\c'._color.'\>')
   endfor
-  "let w:colorDictRegExp=strpart(w:colorDictRegExp, 0, len(w:colorDictRegExp)-2).'\)\c'
 endfunction
 
 function! s:ProcessByLine(w)
@@ -315,18 +283,12 @@ function! s:ProcessByLine(w)
 endfunction
 
 function! s:PreviewCSSColor(str)
-  "if !exists('&w:colorDictRegExp')
-  "endif
-
   let line=a:str "getline(a:w)
   let colorexps = {
         \ 'hex'  : '#[0-9A-Fa-f]\{3\}\>\|#[0-9A-Fa-f]\{6\}\>',
         \ 'rgba' : 'rgba\?(\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*\%(,[^)]*\)\?)',
         \ 'hsla' : 'hsla\?(\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*\%(,[^)]*\)\?)'
         \ }
-  "\ 'color': w:colorDictRegExp
-
-  "let foundcolor=''
 
   for exp in keys(colorexps)
     let place=0
