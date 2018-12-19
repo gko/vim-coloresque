@@ -33,32 +33,32 @@ let s:color_prefix  = 'gui'
 let s:fg_color_calc = 'let color = "#" . toupper(a:color)'
 
 function! s:RestoreColors()
-    for part in keys(b:color_pattern)
+  for part in keys(b:color_pattern)
 
-      "if b:color_pattern[part]=="ffffff"
-        "echoe part
-      "endif
-      
-      call s:MatchColorValue(b:color_pattern[part], part)
-      "echoe color
-      "echoe b:color_pattern[color]
-      "let group = 'cssColor' . tolower(strpart(b:color_pattern[part]["color"], 1))
-      ""exe 'syn match' group '/'.escape(pattern, '/').'/ contained'
-      "exe 'syn cluster cssColors add='.group
-      "exe 'hi' group s:color_prefix.'bg='.b:color_pattern[part]["bg"] s:color_prefix.'fg='.b:color_pattern[part]["fg"]
-      
-      "if !exists('b:matchescache')
-        "let b:matchescache={}
-      "endif
+    "if b:color_pattern[part]=="ffffff"
+    "echoe part
+    "endif
 
-      "let b:matchescache[part] = matchadd(group, part, -1)
-    endfor
+    call s:MatchColorValue(b:color_pattern[part], part)
+    "echoe color
+    "echoe b:color_pattern[color]
+    "let group = 'cssColor' . tolower(strpart(b:color_pattern[part]["color"], 1))
+    ""exe 'syn match' group '/'.escape(pattern, '/').'/ contained'
+    "exe 'syn cluster cssColors add='.group
+    "exe 'hi' group s:color_prefix.'bg='.b:color_pattern[part]["bg"] s:color_prefix.'fg='.b:color_pattern[part]["fg"]
+
+    "if !exists('b:matchescache')
+    "let b:matchescache={}
+    "endif
+
+    "let b:matchescache[part] = matchadd(group, part, -1)
+  endfor
 endfunction
 
 function! s:MatchColorValue(color, part)
   if ! len(a:color) | return | endif
 
-    let group = 'cssColor' . tolower(a:color)
+  let group = 'cssColor' . tolower(a:color)
 
   if !exists('b:color_pattern[a:part]')
     exe s:fg_color_calc
@@ -107,200 +107,204 @@ endfunction
 
 function! s:ClearMatches()
   call clearmatches()
-  
+
   if !exists('b:matchescache')
     return
   endif
   "for i in values(b:matchescache)
-    "call matchdelete(i)
+  "call matchdelete(i)
   "endfor
   unlet b:matchescache
 endfunction
 
 function! s:VimCssInit(update)
 
-    if a:update==1
-        call s:ClearMatches()
-    endif
-    :set isk+=-
-    :set isk+=#
-    :set isk+=.
+  if !exists("b:color_pattern")
+    let b:color_pattern = {}
+  endif
 
-    if len(keys(b:color_pattern))>0
-        call s:RestoreColors()
-        return
-    endif
+  if a:update==1
+    call s:ClearMatches()
+  endif
+  :set isk+=-
+  :set isk+=#
+  :set isk+=.
 
-    "let b:matchescache = {}
+  if len(keys(b:color_pattern))>0
+    call s:RestoreColors()
+    return
+  endif
 
-    call s:AdditionalColors()
+  "let b:matchescache = {}
 
-    "for i in range(1, line("$"))
-        call s:PreviewCSSColor(join(getline(1,'$'), "\n"))
-    "endfor
+  call s:AdditionalColors()
+
+  "for i in range(1, line("$"))
+  call s:PreviewCSSColor(join(getline(1,'$'), "\n"))
+  "endfor
 
 endfunction
 
 function! s:AdditionalColors()
-    "if exists('&b:colorDictRegExp')&&b:colorDictRegExp!=''
-        "return
-    "endif
+  "if exists('&b:colorDictRegExp')&&b:colorDictRegExp!=''
+  "return
+  "endif
 
   " w3c Colors
   " plus extra colors
-    let w:colorDict = {
-      \'black': '#000000',
-      \'red': '#ff0000',
-      \'silver': '#c0c0c0',
-      \'gray': '#808080',
-      \'white': '#ffffff',
-      \'maroon': '#800000',
-      \'purple': '#800080',
-      \'fuchsia': '#ff00ff',
-      \'green': '#008000',
-      \'lime': '#00ff00',
-      \'olive': '#808000',
-      \'yellow': '#ffff00',
-      \'navy': '#000080',
-      \'blue': '#0000ff',
-      \'teal': '#008080',
-      \'aqua': '#00ffff',
-      \'aliceblue': '#f0f8ff',
-      \'antiquewhite': '#faebd7',
-      \'aquamarine': '#7fffd4',
-      \'azure': '#f0ffff',
-      \'beige': '#f5f5dc',
-      \'bisque': '#ffe4c4',
-      \'blanchedalmond': '#ffebcd',
-      \'blueviolet': '#8a2be2',
-      \'brown': '#a52a2a',
-      \'burlywood': '#deb887',
-      \'cadetblue': '#5f9ea0',
-      \'chartreuse': '#7fff00',
-      \'chocolate': '#d2691e',
-      \'coral': '#ff7f50',
-      \'cornflowerblue': '#6495ed',
-      \'cornsilk': '#fff8dc',
-      \'crimson': '#dc143c',
-      \'cyan': '#00ffff',
-      \'darkblue': '#00008b',
-      \'darkcyan': '#008b8b',
-      \'darkgoldenrod': '#b8860b',
-      \'darkgray': '#a9a9a9',
-      \'darkgreen': '#006400',
-      \'darkgrey': '#a9a9a9',
-      \'darkkhaki': '#bdb76b',
-      \'darkmagenta': '#8b008b',
-      \'darkolivegreen': '#556b2f',
-      \'darkorchid': '#9932cc',
-      \'darkred': '#8b0000',
-      \'darksalmon': '#e9967a',
-      \'darkseagreen': '#8fbc8f',
-      \'darkslateblue': '#483d8b',
-      \'darkslategray': '#2f4f4f',
-      \'darkslategrey': '#2f4f4f',
-      \'darkturquoise': '#00ced1',
-      \'darkviolet': '#9400d3',
-      \'darkorange': '#ff8c00',
-      \'deeppink': '#ff1493',
-      \'deepskyblue': '#00bfff',
-      \'dimgray': '#696969',
-      \'dimgrey': '#696969',
-      \'dodgerblue': '#1e90ff',
-      \'firebrick': '#b22222',
-      \'floralwhite': '#fffaf0',
-      \'forestgreen': '#228b22',
-      \'gainsboro': '#dcdcdc',
-      \'ghostwhite': '#f8f8ff',
-      \'gold': '#ffd700',
-      \'goldenrod': '#daa520',
-      \'greenyellow': '#adff2f',
-      \'grey': '#808080',
-      \'honeydew': '#f0fff0',
-      \'hotpink': '#ff69b4',
-      \'indianred': '#cd5c5c',
-      \'indigo': '#4b0082',
-      \'ivory': '#fffff0',
-      \'khaki': '#f0e68c',
-      \'lavender': '#e6e6fa',
-      \'lavenderblush': '#fff0f5',
-      \'lawngreen': '#7cfc00',
-      \'lemonchiffon': '#fffacd',
-      \'lightblue': '#add8e6',
-      \'lightcoral': '#f08080',
-      \'lightcyan': '#e0ffff',
-      \'lightgoldenrodyellow': '#fafad2',
-      \'lightgray': '#d3d3d3',
-      \'lightgreen': '#90ee90',
-      \'lightgrey': '#d3d3d3',
-      \'lightpink': '#ffb6c1',
-      \'lightsalmon': '#ffa07a',
-      \'lightseagreen': '#20b2aa',
-      \'lightskyblue': '#87cefa',
-      \'lightslategray': '#778899',
-      \'lightslategrey': '#778899',
-      \'lightsteelblue': '#b0c4de',
-      \'lightyellow': '#ffffe0',
-      \'limegreen': '#32cd32',
-      \'linen': '#faf0e6',
-      \'magenta': '#ff00ff',
-      \'mediumaquamarine': '#66cdaa',
-      \'mediumblue': '#0000cd',
-      \'mediumorchid': '#ba55d3',
-      \'mediumpurple': '#9370d8',
-      \'mediumseagreen': '#3cb371',
-      \'mediumslateblue': '#7b68ee',
-      \'mediumspringgreen': '#00fa9a',
-      \'mediumturquoise': '#48d1cc',
-      \'mediumvioletred': '#c71585',
-      \'midnightblue': '#191970',
-      \'mintcream': '#f5fffa',
-      \'mistyrose': '#ffe4e1',
-      \'moccasin': '#ffe4b5',
-      \'navajowhite': '#ffdead',
-      \'oldlace': '#fdf5e6',
-      \'olivedrab': '#6b8e23',
-      \'orange': '#ffa500',
-      \'orangered': '#ff4500',
-      \'orchid': '#da70d6',
-      \'palegoldenrod': '#eee8aa',
-      \'palegreen': '#98fb98',
-      \'paleturquoise': '#afeeee',
-      \'palevioletred': '#d87093',
-      \'papayawhip': '#ffefd5',
-      \'peachpuff': '#ffdab9',
-      \'peru': '#cd853f',
-      \'pink': '#ffc0cb',
-      \'plum': '#dda0dd',
-      \'powderblue': '#b0e0e6',
-      \'rosybrown': '#bc8f8f',
-      \'royalblue': '#4169e1',
-      \'saddlebrown': '#8b4513',
-      \'salmon': '#fa8072',
-      \'sandybrown': '#f4a460',
-      \'seagreen': '#2e8b57',
-      \'seashell': '#fff5ee',
-      \'sienna': '#a0522d',
-      \'skyblue': '#87ceeb',
-      \'slateblue': '#6a5acd',
-      \'slategray': '#708090',
-      \'slategrey': '#708090',
-      \'snow': '#fffafa',
-      \'springgreen': '#00ff7f',
-      \'steelblue': '#4682b4',
-      \'tan': '#d2b48c',
-      \'thistle': '#d8bfd8',
-      \'tomato': '#ff6347',
-      \'turquoise': '#40e0d0',
-      \'violet': '#ee82ee',
-      \'wheat': '#f5deb3',
-      \'whitesmoke': '#f5f5f5',
-      \'yellowgreen': '#9acd32'
-    \}
+  let w:colorDict = {
+        \'black': '#000000',
+        \'red': '#ff0000',
+        \'silver': '#c0c0c0',
+        \'gray': '#808080',
+        \'white': '#ffffff',
+        \'maroon': '#800000',
+        \'purple': '#800080',
+        \'fuchsia': '#ff00ff',
+        \'green': '#008000',
+        \'lime': '#00ff00',
+        \'olive': '#808000',
+        \'yellow': '#ffff00',
+        \'navy': '#000080',
+        \'blue': '#0000ff',
+        \'teal': '#008080',
+        \'aqua': '#00ffff',
+        \'aliceblue': '#f0f8ff',
+        \'antiquewhite': '#faebd7',
+        \'aquamarine': '#7fffd4',
+        \'azure': '#f0ffff',
+        \'beige': '#f5f5dc',
+        \'bisque': '#ffe4c4',
+        \'blanchedalmond': '#ffebcd',
+        \'blueviolet': '#8a2be2',
+        \'brown': '#a52a2a',
+        \'burlywood': '#deb887',
+        \'cadetblue': '#5f9ea0',
+        \'chartreuse': '#7fff00',
+        \'chocolate': '#d2691e',
+        \'coral': '#ff7f50',
+        \'cornflowerblue': '#6495ed',
+        \'cornsilk': '#fff8dc',
+        \'crimson': '#dc143c',
+        \'cyan': '#00ffff',
+        \'darkblue': '#00008b',
+        \'darkcyan': '#008b8b',
+        \'darkgoldenrod': '#b8860b',
+        \'darkgray': '#a9a9a9',
+        \'darkgreen': '#006400',
+        \'darkgrey': '#a9a9a9',
+        \'darkkhaki': '#bdb76b',
+        \'darkmagenta': '#8b008b',
+        \'darkolivegreen': '#556b2f',
+        \'darkorchid': '#9932cc',
+        \'darkred': '#8b0000',
+        \'darksalmon': '#e9967a',
+        \'darkseagreen': '#8fbc8f',
+        \'darkslateblue': '#483d8b',
+        \'darkslategray': '#2f4f4f',
+        \'darkslategrey': '#2f4f4f',
+        \'darkturquoise': '#00ced1',
+        \'darkviolet': '#9400d3',
+        \'darkorange': '#ff8c00',
+        \'deeppink': '#ff1493',
+        \'deepskyblue': '#00bfff',
+        \'dimgray': '#696969',
+        \'dimgrey': '#696969',
+        \'dodgerblue': '#1e90ff',
+        \'firebrick': '#b22222',
+        \'floralwhite': '#fffaf0',
+        \'forestgreen': '#228b22',
+        \'gainsboro': '#dcdcdc',
+        \'ghostwhite': '#f8f8ff',
+        \'gold': '#ffd700',
+        \'goldenrod': '#daa520',
+        \'greenyellow': '#adff2f',
+        \'grey': '#808080',
+        \'honeydew': '#f0fff0',
+        \'hotpink': '#ff69b4',
+        \'indianred': '#cd5c5c',
+        \'indigo': '#4b0082',
+        \'ivory': '#fffff0',
+        \'khaki': '#f0e68c',
+        \'lavender': '#e6e6fa',
+        \'lavenderblush': '#fff0f5',
+        \'lawngreen': '#7cfc00',
+        \'lemonchiffon': '#fffacd',
+        \'lightblue': '#add8e6',
+        \'lightcoral': '#f08080',
+        \'lightcyan': '#e0ffff',
+        \'lightgoldenrodyellow': '#fafad2',
+        \'lightgray': '#d3d3d3',
+        \'lightgreen': '#90ee90',
+        \'lightgrey': '#d3d3d3',
+        \'lightpink': '#ffb6c1',
+        \'lightsalmon': '#ffa07a',
+        \'lightseagreen': '#20b2aa',
+        \'lightskyblue': '#87cefa',
+        \'lightslategray': '#778899',
+        \'lightslategrey': '#778899',
+        \'lightsteelblue': '#b0c4de',
+        \'lightyellow': '#ffffe0',
+        \'limegreen': '#32cd32',
+        \'linen': '#faf0e6',
+        \'magenta': '#ff00ff',
+        \'mediumaquamarine': '#66cdaa',
+        \'mediumblue': '#0000cd',
+        \'mediumorchid': '#ba55d3',
+        \'mediumpurple': '#9370d8',
+        \'mediumseagreen': '#3cb371',
+        \'mediumslateblue': '#7b68ee',
+        \'mediumspringgreen': '#00fa9a',
+        \'mediumturquoise': '#48d1cc',
+        \'mediumvioletred': '#c71585',
+        \'midnightblue': '#191970',
+        \'mintcream': '#f5fffa',
+        \'mistyrose': '#ffe4e1',
+        \'moccasin': '#ffe4b5',
+        \'navajowhite': '#ffdead',
+        \'oldlace': '#fdf5e6',
+        \'olivedrab': '#6b8e23',
+        \'orange': '#ffa500',
+        \'orangered': '#ff4500',
+        \'orchid': '#da70d6',
+        \'palegoldenrod': '#eee8aa',
+        \'palegreen': '#98fb98',
+        \'paleturquoise': '#afeeee',
+        \'palevioletred': '#d87093',
+        \'papayawhip': '#ffefd5',
+        \'peachpuff': '#ffdab9',
+        \'peru': '#cd853f',
+        \'pink': '#ffc0cb',
+        \'plum': '#dda0dd',
+        \'powderblue': '#b0e0e6',
+        \'rosybrown': '#bc8f8f',
+        \'royalblue': '#4169e1',
+        \'saddlebrown': '#8b4513',
+        \'salmon': '#fa8072',
+        \'sandybrown': '#f4a460',
+        \'seagreen': '#2e8b57',
+        \'seashell': '#fff5ee',
+        \'sienna': '#a0522d',
+        \'skyblue': '#87ceeb',
+        \'slateblue': '#6a5acd',
+        \'slategray': '#708090',
+        \'slategrey': '#708090',
+        \'snow': '#fffafa',
+        \'springgreen': '#00ff7f',
+        \'steelblue': '#4682b4',
+        \'tan': '#d2b48c',
+        \'thistle': '#d8bfd8',
+        \'tomato': '#ff6347',
+        \'turquoise': '#40e0d0',
+        \'violet': '#ee82ee',
+        \'wheat': '#f5deb3',
+        \'whitesmoke': '#f5f5f5',
+        \'yellowgreen': '#9acd32'
+        \}
 
-  "let w:colorDictRegExp = '\(' 
+  "let w:colorDictRegExp = '\('
   for _color in keys(w:colorDict)
-    "let w:colorDictRegExp.='\<'._color.'\>\|' 
+    "let w:colorDictRegExp.='\<'._color.'\>\|'
     call s:MatchColorValue(strpart(w:colorDict[tolower(_color)], 1), '\<\c'._color.'\>')
   endfor
   "let w:colorDictRegExp=strpart(w:colorDictRegExp, 0, len(w:colorDictRegExp)-2).'\)\c'
@@ -316,52 +320,52 @@ function! s:PreviewCSSColor(str)
 
   let line=a:str "getline(a:w)
   let colorexps = {
-    \ 'hex'  : '#[0-9A-Fa-f]\{3\}\>\|#[0-9A-Fa-f]\{6\}\>',
-    \ 'rgba' : 'rgba\?(\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*\%(,[^)]*\)\?)',
-    \ 'hsla' : 'hsla\?(\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*\%(,[^)]*\)\?)'
-    \ }
-    "\ 'color': w:colorDictRegExp
+        \ 'hex'  : '#[0-9A-Fa-f]\{3\}\>\|#[0-9A-Fa-f]\{6\}\>',
+        \ 'rgba' : 'rgba\?(\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*\%(,[^)]*\)\?)',
+        \ 'hsla' : 'hsla\?(\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*\%(,[^)]*\)\?)'
+        \ }
+  "\ 'color': w:colorDictRegExp
 
   "let foundcolor=''
 
   for exp in keys(colorexps)
-      let place=0
+    let place=0
 
-      if exists("foundcolor")
-          unlet foundcolor
+    if exists("foundcolor")
+      unlet foundcolor
+    endif
+
+    while 1
+      if exp=='rgba'||exp=='hsla'
+        let foundcolor = matchlist(a:str, colorexps[exp], place)
+      else
+        let foundcolor = matchstr(a:str, colorexps[exp], place)
       endif
 
-      while 1
-          if exp=='rgba'||exp=='hsla'
-              let foundcolor = matchlist(a:str, colorexps[exp], place)
-          else
-              let foundcolor = matchstr(a:str, colorexps[exp], place)
-          endif
+      let place = matchend(a:str, colorexps[exp], place)
 
-          let place = matchend(a:str, colorexps[exp], place)
+      if empty(foundcolor)
+        break
+      endif
 
-          if empty(foundcolor)
-              break
-          endif
+      if exp=='hex'
+        let part = foundcolor.'\>'
+      else
+        let part = foundcolor[0]
+      endif
 
-          if exp=='hex'
-              let part = foundcolor.'\>'
-          else
-              let part = foundcolor[0]
-          endif
-
-          if exp=='hex'
-              if len(foundcolor) == 4
-                  let foundcolor = substitute(foundcolor, '[[:xdigit:]]', '&&', 'g')
-              endif
-              call s:MatchColorValue(strpart(foundcolor, 1), part)
-          elseif exp=='rgba'
-              "TODO get rid of duplicated variables
-              call s:MatchColorValue(s:HexForRGBValue(foundcolor[1], foundcolor[2], foundcolor[3]), part)
-          elseif exp=='hsla'
-              call s:MatchColorValue(s:HexForHSLValue(foundcolor[1], foundcolor[2], foundcolor[3]), part)
-          endif
-      endwhile
+      if exp=='hex'
+        if len(foundcolor) == 4
+          let foundcolor = substitute(foundcolor, '[[:xdigit:]]', '&&', 'g')
+        endif
+        call s:MatchColorValue(strpart(foundcolor, 1), part)
+      elseif exp=='rgba'
+        "TODO get rid of duplicated variables
+        call s:MatchColorValue(s:HexForRGBValue(foundcolor[1], foundcolor[2], foundcolor[3]), part)
+      elseif exp=='hsla'
+        call s:MatchColorValue(s:HexForHSLValue(foundcolor[1], foundcolor[2], foundcolor[3]), part)
+      endif
+    endwhile
   endfor
 
 endfunction
@@ -390,49 +394,49 @@ if has("gui_running") || &t_Co==256
 
     " preset 16 vt100 colors
     let s:xtermcolor = [
-      \ [ 0x00, 0x00, 0x00,  0 ],
-      \ [ 0xCD, 0x00, 0x00,  1 ],
-      \ [ 0x00, 0xCD, 0x00,  2 ],
-      \ [ 0xCD, 0xCD, 0x00,  3 ],
-      \ [ 0x00, 0x00, 0xEE,  4 ],
-      \ [ 0xCD, 0x00, 0xCD,  5 ],
-      \ [ 0x00, 0xCD, 0xCD,  6 ],
-      \ [ 0xE5, 0xE5, 0xE5,  7 ],
-      \ [ 0x7F, 0x7F, 0x7F,  8 ],
-      \ [ 0xFF, 0x00, 0x00,  9 ],
-      \ [ 0x00, 0xFF, 0x00, 10 ],
-      \ [ 0xFF, 0xFF, 0x00, 11 ],
-      \ [ 0x5C, 0x5C, 0xFF, 12 ],
-      \ [ 0xFF, 0x00, 0xFF, 13 ],
-      \ [ 0x00, 0xFF, 0xFF, 14 ],
-      \ [ 0xFF, 0xFF, 0xFF, 15 ]]
+          \ [ 0x00, 0x00, 0x00,  0 ],
+          \ [ 0xCD, 0x00, 0x00,  1 ],
+          \ [ 0x00, 0xCD, 0x00,  2 ],
+          \ [ 0xCD, 0xCD, 0x00,  3 ],
+          \ [ 0x00, 0x00, 0xEE,  4 ],
+          \ [ 0xCD, 0x00, 0xCD,  5 ],
+          \ [ 0x00, 0xCD, 0xCD,  6 ],
+          \ [ 0xE5, 0xE5, 0xE5,  7 ],
+          \ [ 0x7F, 0x7F, 0x7F,  8 ],
+          \ [ 0xFF, 0x00, 0x00,  9 ],
+          \ [ 0x00, 0xFF, 0x00, 10 ],
+          \ [ 0xFF, 0xFF, 0x00, 11 ],
+          \ [ 0x5C, 0x5C, 0xFF, 12 ],
+          \ [ 0xFF, 0x00, 0xFF, 13 ],
+          \ [ 0x00, 0xFF, 0xFF, 14 ],
+          \ [ 0xFF, 0xFF, 0xFF, 15 ]]
     " grayscale ramp
     " (value is 8+10*lum for lum in 0..23)
     let s:xtermcolor += [
-      \ [ 0x08, 0x08, 0x08, 232 ],
-      \ [ 0x12, 0x12, 0x12, 233 ],
-      \ [ 0x1C, 0x1C, 0x1C, 234 ],
-      \ [ 0x26, 0x26, 0x26, 235 ],
-      \ [ 0x30, 0x30, 0x30, 236 ],
-      \ [ 0x3A, 0x3A, 0x3A, 237 ],
-      \ [ 0x44, 0x44, 0x44, 238 ],
-      \ [ 0x4E, 0x4E, 0x4E, 239 ],
-      \ [ 0x58, 0x58, 0x58, 240 ],
-      \ [ 0x62, 0x62, 0x62, 241 ],
-      \ [ 0x6C, 0x6C, 0x6C, 242 ],
-      \ [ 0x76, 0x76, 0x76, 243 ],
-      \ [ 0x80, 0x80, 0x80, 244 ],
-      \ [ 0x8A, 0x8A, 0x8A, 245 ],
-      \ [ 0x94, 0x94, 0x94, 246 ],
-      \ [ 0x9E, 0x9E, 0x9E, 247 ],
-      \ [ 0xA8, 0xA8, 0xA8, 248 ],
-      \ [ 0xB2, 0xB2, 0xB2, 249 ],
-      \ [ 0xBC, 0xBC, 0xBC, 250 ],
-      \ [ 0xC6, 0xC6, 0xC6, 251 ],
-      \ [ 0xD0, 0xD0, 0xD0, 252 ],
-      \ [ 0xDA, 0xDA, 0xDA, 253 ],
-      \ [ 0xE4, 0xE4, 0xE4, 254 ],
-      \ [ 0xEE, 0xEE, 0xEE, 255 ]]
+          \ [ 0x08, 0x08, 0x08, 232 ],
+          \ [ 0x12, 0x12, 0x12, 233 ],
+          \ [ 0x1C, 0x1C, 0x1C, 234 ],
+          \ [ 0x26, 0x26, 0x26, 235 ],
+          \ [ 0x30, 0x30, 0x30, 236 ],
+          \ [ 0x3A, 0x3A, 0x3A, 237 ],
+          \ [ 0x44, 0x44, 0x44, 238 ],
+          \ [ 0x4E, 0x4E, 0x4E, 239 ],
+          \ [ 0x58, 0x58, 0x58, 240 ],
+          \ [ 0x62, 0x62, 0x62, 241 ],
+          \ [ 0x6C, 0x6C, 0x6C, 242 ],
+          \ [ 0x76, 0x76, 0x76, 243 ],
+          \ [ 0x80, 0x80, 0x80, 244 ],
+          \ [ 0x8A, 0x8A, 0x8A, 245 ],
+          \ [ 0x94, 0x94, 0x94, 246 ],
+          \ [ 0x9E, 0x9E, 0x9E, 247 ],
+          \ [ 0xA8, 0xA8, 0xA8, 248 ],
+          \ [ 0xB2, 0xB2, 0xB2, 249 ],
+          \ [ 0xBC, 0xBC, 0xBC, 250 ],
+          \ [ 0xC6, 0xC6, 0xC6, 251 ],
+          \ [ 0xD0, 0xD0, 0xD0, 252 ],
+          \ [ 0xDA, 0xDA, 0xDA, 253 ],
+          \ [ 0xE4, 0xE4, 0xE4, 254 ],
+          \ [ 0xEE, 0xEE, 0xEE, 255 ]]
 
     " the 6 values used in the xterm color cube
     "                    0    95   135   175   215   255
@@ -440,11 +444,11 @@ if has("gui_running") || &t_Co==256
 
     " 0..255 mapped to 0..5 based on the color cube values
     let s:xvquant = repeat([0],48)
-        \         + repeat([1],68)
-        \         + repeat([2],40)
-        \         + repeat([3],40)
-        \         + repeat([4],40)
-        \         + repeat([5],20)
+          \         + repeat([1],68)
+          \         + repeat([2],40)
+          \         + repeat([3],40)
+          \         + repeat([4],40)
+          \         + repeat([5],20)
     " tweak the mapping for the exact matches (0 and 1 already correct)
     let s:xvquant[s:cubergb[2]] = 2
     let s:xvquant[s:cubergb[3]] = 3
@@ -622,10 +626,10 @@ if has("gui_running") || &t_Co==256
   "call s:VimCssInit(1)
 
   ":augroup css
-    "au!
-    autocmd CursorMovedI <buffer> silent call s:ProcessByLine('.')
-    autocmd ColorScheme <buffer> silent call s:VimCssInit(1)
-    autocmd BufEnter <buffer> silent call s:VimCssInit(1)
+  "au!
+  autocmd CursorMovedI <buffer> silent call s:ProcessByLine('.')
+  autocmd ColorScheme <buffer> silent call s:VimCssInit(1)
+  autocmd BufEnter <buffer> silent call s:VimCssInit(1)
   ":augroup END
 
   "autocmd CursorMoved  <buffer> silent call s:ProcessByLine('.')
