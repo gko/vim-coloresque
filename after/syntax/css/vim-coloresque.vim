@@ -70,7 +70,7 @@ function! s:MatchColorValue(color, part)
   if !exists('b:matchescache')
     let b:matchescache = {}
   elseif !exists('b:matchescache[a:part]')
-    let b:matchescache[a:part] = matchadd(group, a:part, -1)
+    let b:matchescache[a:part] = matchadd(group, '\w\@<!'.a:part, -1)
   endif
 
   "call add(w:matchescache, matchadd(group, a:part, -1))
@@ -316,9 +316,9 @@ function! s:PreviewCSSColor(str)
 
   let line=a:str "getline(a:w)
   let colorexps = {
-    \ 'hex'  : '#[0-9A-Fa-f]\{3\}\>\|#[0-9A-Fa-f]\{6\}\>',
-    \ 'rgba' : 'rgba\?(\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*\%(,[^)]*\)\?)',
-    \ 'hsla' : 'hsla\?(\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*\%(,[^)]*\)\?)'
+    \ 'hex'  : '\w\@<!#[0-9A-Fa-f]\{3\}\>\|#[0-9A-Fa-f]\{6\}\>',
+    \ 'rgba' : '\w\@<!rgba\?(\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*\%(,[^)]*\)\?)',
+    \ 'hsla' : '\w\@<!hsla\?(\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*\%(,[^)]*\)\?)'
     \ }
     "\ 'color': w:colorDictRegExp
 
