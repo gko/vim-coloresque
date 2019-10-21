@@ -126,6 +126,12 @@ function! s:VimCssInit(update)
     :set isk+=#
     :set isk+=.
 
+    if !exists("b:color_pattern")
+        let b:color_pattern = {}
+        return
+    endif
+
+
     if len(keys(b:color_pattern))>0
         call s:RestoreColors()
         return
