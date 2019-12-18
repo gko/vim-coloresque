@@ -627,7 +627,7 @@ if has('gui_running') || &t_Co==256
 
   "call s:VimCssInit(1)
 
-  augroup css
+  augroup coloresque
     au!
     autocmd CursorMovedI <buffer> silent call s:ProcessByLine('.')
     autocmd ColorScheme <buffer> silent call s:VimCssInit(1)
