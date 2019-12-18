@@ -63,7 +63,7 @@ function! s:MatchColorValue(color, part)
   if !exists('b:color_pattern[a:part]')
     exe s:fg_color_calc
     exe 'syn cluster cssColors add='.group
-    exe 'hi' group s:color_prefix.'bg='.a:color s:color_prefix.'fg='.s:FGForBG(a:color)
+    exe 'hi' group s:color_prefix.'bg='.color s:color_prefix.'fg='.s:FGForBG(a:color)
     let b:color_pattern[a:part] = a:color
   endif
 
