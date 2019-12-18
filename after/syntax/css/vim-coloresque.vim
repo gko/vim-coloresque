@@ -122,11 +122,11 @@ function! s:VimCssInit(update)
     if a:update==1
         call s:ClearMatches()
     endif
-    :set isk+=-
-    :set isk+=#
-    :set isk+=.
+    setlocal isk+=-
+    setlocal isk+=#
+    setlocal isk+=.
 
-    if !exists("b:color_pattern")
+    if !exists('b:color_pattern')
         let b:color_pattern = {}
         return
     endif
@@ -333,12 +333,12 @@ function! s:PreviewCSSColor(str)
   for exp in keys(colorexps)
       let place=0
 
-      if exists("foundcolor")
+      if exists('foundcolor')
           unlet foundcolor
       endif
 
       while 1
-          if exp=='rgba'||exp=='hsla'
+          if exp ==# 'rgba' || exp ==# 'hsla'
               let foundcolor = matchlist(a:str, colorexps[exp], place)
           else
               let foundcolor = matchstr(a:str, colorexps[exp], place)
@@ -350,21 +350,21 @@ function! s:PreviewCSSColor(str)
               break
           endif
 
-          if exp=='hex'
+          if exp ==# 'hex'
               let part = foundcolor.'\>'
           else
               let part = foundcolor[0]
           endif
 
-          if exp=='hex'
+          if exp ==# 'hex'
               if len(foundcolor) == 4
                   let foundcolor = substitute(foundcolor, '[[:xdigit:]]', '&&', 'g')
               endif
               call s:MatchColorValue(strpart(foundcolor, 1), part)
-          elseif exp=='rgba'
+          elseif exp ==# 'rgba'
               "TODO get rid of duplicated variables
               call s:MatchColorValue(s:HexForRGBValue(foundcolor[1], foundcolor[2], foundcolor[3]), part)
-          elseif exp=='hsla'
+          elseif exp ==# 'hsla'
               call s:MatchColorValue(s:HexForHSLValue(foundcolor[1], foundcolor[2], foundcolor[3]), part)
           endif
       endwhile
@@ -372,14 +372,14 @@ function! s:PreviewCSSColor(str)
 
 endfunction
 
-if has("gui_running") || &t_Co==256
+if has('gui_running') || &t_Co==256
   " HACK modify cssDefinition to add @cssColors to its contains
   redir => cssdef
   silent! syn list cssDefinition
   redir END
   if len( cssdef )
     for out in split( cssdef, "\n" )
-      if out !~ '^cssDefinition ' | continue | endif
+      if out !~# '^cssDefinition ' | continue | endif
       let out = substitute( out, ' \+xxx \+', ' ', '' )
       let out = substitute( out, ' contains=\zs', '@cssColors,', '' )
       exe 'syn region' out
@@ -627,12 +627,12 @@ if has("gui_running") || &t_Co==256
 
   "call s:VimCssInit(1)
 
-  ":augroup css
-    "au!
+  augroup coloresque
+    au!
     autocmd CursorMovedI <buffer> silent call s:ProcessByLine('.')
     autocmd ColorScheme <buffer> silent call s:VimCssInit(1)
     autocmd BufEnter <buffer> silent call s:VimCssInit(1)
-  ":augroup END
+  augroup END
 
   "autocmd CursorMoved  <buffer> silent call s:ProcessByLine('.')
 endif
