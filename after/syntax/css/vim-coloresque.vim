@@ -348,7 +348,7 @@ if has('gui_running') || &t_Co==256
         endfor
     endif
 
-    if ! has("termguicolors")
+    if !has('gui_running') && !has("termguicolors")
         let s:black = 0
         let s:white = 15
 
