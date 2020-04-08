@@ -1,13 +1,4 @@
-Coloresque
-==========
-
-***
-
-**Important!** If you experience any lags in css/html/less/sass files please update to latest version(0.9.5) of plugin.
-
-The issue [#13](https://github.com/gorodinskiy/vim-coloresque/issues/13) from 26.09.2013. Sorry for the inconvenience.
-
-***
+# Coloresque
 
 ![pic](https://raw.github.com/gorodinskiy/vim-coloresque/master/screen.png)
 
