@@ -11,10 +11,17 @@ The main goal was to fix cursorline [bug](https://github.com/skammer/vim-css-col
 
 ### Installation
 
-Via [vundle](https://github.com/gmarik/vundle):
+Via [Vundle](https://github.com/gmarik/vundle):
 
 ```
-Bundle 'https://github.com/gorodinskiy/vim-coloresque.git'
+Bundle 'https://github.com/gko/vim-coloresque.git'
+```
+
+
+Via [Plug](https://github.com/junegunn/vim-plug):
+
+```
+Plug 'gko/vim-coloresque'
 ```
 
 ### Features
