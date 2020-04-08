@@ -51,11 +51,11 @@ function! s:MatchColorValue(color, part)
         let b:color_pattern[a:part] = a:color
     endif
 
-    if !exists('b:matchescache')
-        let b:matchescache = {}
-    elseif !exists('b:matchescache[a:part]')
-        let b:matchescache[a:part] = matchadd(group, a:part, -1)
-    endif
+  if !exists('b:matchescache')
+    let b:matchescache = {}
+  elseif !exists('b:matchescache[a:part]')
+    let b:matchescache[a:part] = matchadd(group, '\w\@<!'.a:part, -1)
+  endif
 
     return ''
 endfunction
@@ -285,12 +285,18 @@ function! s:ProcessByLine(w)
 endfunction
 
 function! s:PreviewCSSColor(str)
-    let line=a:str "getline(a:w)
-    let colorexps = {
-        \ 'hex'  : '#[0-9A-Fa-f]\{3\}\>\|#[0-9A-Fa-f]\{6\}\>',
-        \ 'rgba' : 'rgba\?(\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*\%(,[^)]*\)\?)',
-        \ 'hsla' : 'hsla\?(\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*\%(,[^)]*\)\?)'
-        \ }
+  "if !exists('&w:colorDictRegExp')
+  "endif
+
+  let line=a:str "getline(a:w)
+  let colorexps = {
+    \ 'hex'  : '\w\@<!#[0-9A-Fa-f]\{3\}\>\|#[0-9A-Fa-f]\{6\}\>',
+    \ 'rgba' : '\w\@<!rgba\?(\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*\%(,[^)]*\)\?)',
+    \ 'hsla' : '\w\@<!hsla\?(\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*,\s*\(\d\{1,3}%\?\)\s*\%(,[^)]*\)\?)'
+    \ }
+    "\ 'color': w:colorDictRegExp
+
+  "let foundcolor=''
 
     for exp in keys(colorexps)
         let place=0
