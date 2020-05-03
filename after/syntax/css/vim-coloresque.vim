@@ -18,6 +18,12 @@ let s:hex={}
 let b:matchescache = {}
 let b:color_pattern = {}
 
+" set buffer iskeyword
+let b:keywords = exists('g:coloresque_keywords') ? g:coloresque_keywords : []
+for keyword in b:keywords
+    exe printf('setlocal iskeyword+=%s', keyword)
+endfor
+
 let w:colorDictRegExp=''
 for i in range(0, 255)
     let s:hex[ printf( '%02x', i ) ] = i
