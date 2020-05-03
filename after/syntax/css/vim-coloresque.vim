@@ -21,7 +21,7 @@ let b:color_pattern = {}
 " set buffer iskeyword
 let b:keywords = exists('g:coloresque_keywords') ? g:coloresque_keywords : []
 for keyword in b:keywords
-    exe printf('set iskeyword+=%s', keyword)
+    exe printf('setlocal iskeyword+=%s', keyword)
 endfor
 
 let w:colorDictRegExp=''
