@@ -8,6 +8,12 @@
 " https://github.com/lilydjwg/colorizer
 " vim:et:ts=2 sw=2 sts=2
 
+if exists('g:did_coloresque_loaded') || v:version < 800
+  finish
+endif
+
+let g:did_coloresque_loaded = 1
+
 let s:hex={}
 let b:matchescache = {}
 let b:color_pattern = {}
@@ -101,10 +107,6 @@ function! s:VimCssInit(update)
     if a:update==1
         call s:ClearMatches()
     endif
-
-    setlocal isk+=-
-    setlocal isk+=#
-    setlocal isk+=.
 
     if !exists('b:color_pattern')
         let b:color_pattern = {}
